@@ -12,7 +12,7 @@ Currently, this script is a simple fizzbuzz generator.
 
 You can also run tests with::
 
-    $ python3 -m pytest -v --doctest-modules \
+    $ python3 -m pytest -v --log-level=debug --doctest-modules \
               --cov=fizzbuzz ./fizzbuzz.py
     $ python3 -m coverage html
 
@@ -98,15 +98,15 @@ def setup_logging(options):
 def fizzbuzz(n, fizz, buzz):
     """Compute fizzbuzz nth item given modulo values for fizz and buzz.
 
-    >>> fizzbuzz(5, 3, 5)
+    >>> fizzbuzz(5, fizz=3, buzz=5)
     'buzz'
-    >>> fizzbuzz(3, 3, 5)
+    >>> fizzbuzz(3, fizz=3, buzz=5)
     'fizz'
-    >>> fizzbuzz(15, 3, 5)
+    >>> fizzbuzz(15, fizz=3, buzz=5)
     'fizzbuzz'
-    >>> fizzbuzz(4, 3, 5)
+    >>> fizzbuzz(4, fizz=3, buzz=5)
     4
-    >>> fizzbuzz(4, 4, 6)
+    >>> fizzbuzz(4, fizz=4, buzz=6)
     'fizz'
 
     """
@@ -123,7 +123,8 @@ def main(options):
     """Compute a fizzbuzz set of strings and return them as an array."""
     logger.debug("compute fizzbuzz from {} to {}".format(options.start,
                                                          options.end))
-    return [str(fizzbuzz(i, options.fizz, options.buzz))
+    return [str(fizzbuzz(i,
+                         fizz=options.fizz, buzz=options.buzz))
             for i in range(options.start, options.end+1)]
 
 
@@ -154,7 +155,4 @@ import shlex                    # noqa: E402
 ])
 def test_main(args, expected):
     options = parse_args(shlex.split(args))
-    options.debug = True
-    options.silent = True
-    setup_logging(options)
     assert main(options) == expected
